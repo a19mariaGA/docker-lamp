@@ -12,6 +12,19 @@
                     Inicializar 
                 </a>
             </li>
+
+
+            <li class="nav-item">
+                <a class="nav-link" href="usuarios.php">
+                    Lista Usuarios
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="nuevoUsuarioForm.php">
+                    Nuevo Usuario
+                </a>
+            </li>
             
             <li class="nav-item">
                 <a class="nav-link" href="nuevaForm.php">

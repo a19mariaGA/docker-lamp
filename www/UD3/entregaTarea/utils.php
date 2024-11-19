@@ -1,5 +1,5 @@
 <?php
-
+/*
 $tareas = [
         [
             'id' => 1,
@@ -21,7 +21,7 @@ $tareas = [
             'descripcion' => 'Publicar en github solución de la tarea unidad 2',
             'estado' => 'Completada'
         ]
-    ];
+    ];*/
 
 function tareas()
 {
