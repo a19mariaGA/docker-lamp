@@ -25,7 +25,7 @@
 
                 <form action="editaUsuario.php" method="POST" class="mb-2 w-50">
                         <?php
-                        require_once('database.php');
+                        require_once('pdo.php');
 
                         // Verificar si se recibe solo el `id` para cargar los datos
                         if (isset($_GET['id']) && !empty($_GET['id']) ) 

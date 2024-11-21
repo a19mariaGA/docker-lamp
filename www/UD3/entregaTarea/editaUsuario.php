@@ -25,7 +25,7 @@
                 <form action="editarUsuario.php" method="POST" class="mb-2 w-50">
                         <?php
                         
-                        require_once('database.php');
+                        require_once('pdo.php');
                         require_once('utils.php');
 
 

@@ -41,7 +41,7 @@
                    
 
                             <?php
-                                    require_once('databaseMYSQL.php');
+                                    require_once('mysqli.php');
                                     $id = null;
                                     if (!empty($_GET) && isset($_GET['id'])) {
                                         $id = $_GET['id'];

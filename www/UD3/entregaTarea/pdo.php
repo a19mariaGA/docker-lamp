@@ -192,4 +192,39 @@ function actualizaUsuario($id,  $username, $nombre, $apellidos, $contrasena)
     }
 }
 
+
+
+function borrarTarea($id)
+{
+    try {
+      
+        $conexion = conexion_PDO();
+        $conexion->exec("USE tareas");
+
+        $conexion->beginTransaction();
+
+        $sqlTareas = "DELETE FROM tareas WHERE id_usuario = :usuarioId";
+        $stmtTareas = $conexion->prepare($sqlTareas);
+        $stmtTareas->bindParam(':usuarioId', $id, PDO::PARAM_INT);
+        $stmtTareas->execute();
+
+        $sqlUsuarios = "DELETE FROM usuarios WHERE id = :usuarioId";
+        $stmtUsuarios = $conexion->prepare($sqlUsuarios);
+        $stmtUsuarios->bindParam(':usuarioId', $id, PDO::PARAM_INT);
+        $stmtUsuarios->execute();
+
+        $conexion->commit();
+        return true;
+    }
+    catch (PDOException $e) {
+        error_log("Error al borrar usuario: " . $e->getMessage());
+        return false;
+    }
+    finally
+    {
+        $conexion = null;
+    }
+}
+
+
 ?>

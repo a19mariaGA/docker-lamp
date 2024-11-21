@@ -24,7 +24,7 @@
                 <div class="container justify-content-between">
                     
                     <?php
-                        require_once('databaseMYSQL.php');
+                        require_once('mysqli.php');
 
 
                         $resultado = crear_bbdd();

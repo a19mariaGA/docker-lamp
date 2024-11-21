@@ -24,7 +24,7 @@
                 <?php
                             // Incluir las funciones necesarias
                             require_once('utils.php');
-                            require_once('databaseMYSQL.php');
+                            require_once('mysqli.php');
 
                             // Recoger los datos del formulario
                             if ($_SERVER["REQUEST_METHOD"] == "POST") {

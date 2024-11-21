@@ -36,7 +36,7 @@
                             </thead>
                             <tbody>
                                 <?php
-                                    require_once('database.php');
+                                    require_once('pdo.php');
                                     $resultado = select_usuarios();
                                     if ($resultado && $resultado[0])
                                     {

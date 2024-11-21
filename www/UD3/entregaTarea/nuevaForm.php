@@ -22,7 +22,7 @@
 
                 <?php
                 // Incluir la función para obtener los usuarios
-                require_once('databaseMYSQL.php');
+                require_once('mysqli.php');
 
                 // Obtener la lista de usuarios desde la base de datos
                 $usuarios = obtenerUsuarios();
