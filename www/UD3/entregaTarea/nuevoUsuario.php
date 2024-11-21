@@ -29,8 +29,17 @@
                     $apellidos = $_POST['apellidos'];
                     $contrasena = $_POST['contrasena'];
                    
+                    require_once('database.php');
                     require_once('utils.php');
+
                     $error = false;
+
+                    if (!validarCampoTexto($username))
+                    {
+                        $error = true;
+                        echo '<div class="alert alert-danger" role="alert">El campo username es obligatorio y debe contener al menos 3 caracteres</div>';
+                    }
+                    
                     //verificar nombre
                     if (!validarCampoTexto($nombre))
                     {
@@ -43,22 +52,17 @@
                         $error = true;
                         echo '<div class="alert alert-danger" role="alert">El campo apellidos es obligatorio y debe contener al menos 3 caracteres.</div>';
                     }
-                    //verificar edad
-                    if (!esNumeroValido($edad))
+                    
+                    if (!validarCampoTexto($contrasena))
                     {
                         $error = true;
-                        echo '<div class="alert alert-danger" role="alert">El campo edad es obligatorio y debe contener solo números.</div>';
+                        echo '<div class="alert alert-danger" role="alert">El campo contraseña es obligatorio y debe contener al menos 3 caracteres.</div>';
                     }
-                    //verificar provincia
-                    if (!validarCampoTexto($provincia))
-                    {
-                        $error = true;
-                        echo '<div class="alert alert-danger" role="alert">El campo provincia es obligatorio y debe contener al menos 3 caracteres</div>';
-                    }
+
                     if (!$error)
                     {
-                        require_once('database.php');
-                        $resultado = nuevoUsuario(filtraCampo($nombre), filtraCampo($apellidos), filtraCampo($edad), filtraCampo($nombre));
+                        
+                        $resultado = nuevoUsuario(test_input($username), test_input($nombre), test_input($apellidos),  test_input($contrasena));
                         if ($resultado[0])
                         {
                             echo '<div class="alert alert-success" role="alert">Usuario guardado correctamente.</div>';
@@ -68,6 +72,7 @@
                             echo '<div class="alert alert-danger" role="alert">Ocurrió un error guardando el usuario: ' . $resultado[1] . '</div>';
                         }
                     }
+
                     ?>
                 </div>
 

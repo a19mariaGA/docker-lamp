@@ -20,32 +20,59 @@
                     <h2>Nueva tarea</h2>
                 </div>
 
-                <div class="container justify-content-between">
-                    <form action="nueva.php" method="POST" class="mb-5 w-50">
+                <?php
+                // Incluir la función para obtener los usuarios
+                require_once('databaseMYSQL.php');
 
-                        <div class="mb-3">
-                            <label for="id" class="form-label">Identificador</label>
-                            <input type="text" class="form-control" id="id" name="id" required>
-                        </div>
+                // Obtener la lista de usuarios desde la base de datos
+                $usuarios = obtenerUsuarios();
+            ?>
 
-                        <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción</label>
-                            <input type="text" class="form-control" id="descripcion" name="descripcion" required>
-                        </div>
+        <div class="container justify-content-between">
+            <form action="nueva.php" method="POST" class="mb-5 w-50">
 
-                        <div class="mb-3">
-                            <label for="estado" class="form-label">Estado</label>
-                            <select class="form-select" id="estado" name="estado" required>
-                                <option value="" selected disabled>Seleccione el estado</option>
-                                <option value="en_proceso">En Proceso</option>
-                                <option value="pendiente">Pendiente</option>
-                                <option value="completada">Completada</option>
-                            </select>
-                        </div>
+            <div class="mb-3">
+                    <label for="titulo" class="form-label">Titulo</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo" required>
+                </div>
+                <!-- Campo para Descripción de la tarea -->
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <input type="text" class="form-control" id="descripcion" name="descripcion" required>
+                </div>
 
-                        <button type="submit" class="btn btn-primary">Enviar</button>
-                        
-                    </form>
+                <!-- Campo para Estado de la tarea -->
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select class="form-select" id="estado" name="estado" required>
+                        <option value="" selected disabled>Seleccione el estado</option>
+                        <option value="en_proceso">En Proceso</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="completada">Completada</option>
+                    </select>
+                </div>
+
+                <!-- Campo para seleccionar el Usuario -->
+                <div class="mb-3">
+                    <label for="id_usuario" class="form-label">Usuario</label>
+                    <select class="form-select" id="id_usuario" name="id_usuario" required>
+                        <option value="" selected disabled>Seleccione el usuario</option>
+                        <?php foreach ($usuarios as $usuario): ?>
+                            <option value="<?= $usuario['id']; ?>">
+                                <?= htmlspecialchars($usuario['username']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- Botón de envío del formulario -->
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+        </div>
+
+
+
+
                 </div>
             </main>
         </div>

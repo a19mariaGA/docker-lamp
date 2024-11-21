@@ -21,39 +21,56 @@
                 </div>
 
                 <div class="container justify-content-between">
-                    <?php
-                        require_once('utils.php');
-                        $id = $_POST['id'];
-                        $desc = $_POST['descripcion'];
-                        $estado = $_POST['estado'];
-                        $valido = true;
-                        if (!esCampoValido($id))
-                        {
-                            $valido = false;
-                        }
-                        if (!esCampoValido($desc))
-                        {
-                            $valido = false;
-                        }
-                        if (!esCampoValido($estado))
-                        {
-                            $valido = false;
-                        }
-                        if (!guardar($id, $desc, $estado))
-                        {
-                            $validao = false;
-                        }
-                        if ($valido)
-                        {
-                            echo "<p>La tarea $id se almacenó correctamente:</p>";
-                            echo "<ul><li>Descripción: $desc</li><li>Estado: $estado</li></ul>";
-                        }
-                        else
-                        {
-                            echo '<p class="error">Alguno de los campos no es válido.</p>';
-                        }
+                <?php
+                            // Incluir las funciones necesarias
+                            require_once('utils.php');
+                            require_once('databaseMYSQL.php');
 
-                    ?>
+                            // Recoger los datos del formulario
+                            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                                // Ya no recogemos el 'id' porque es autoincremental
+                                $titulo = $_POST['titulo']; // Títul
+                                $desc = $_POST['descripcion']; // Descripción
+                                $estado = $_POST['estado']; // Estado
+                                $id_usuario = $_POST['id_usuario']; // ID de usuario
+
+                               
+                                // Variable para verificar si los campos son válidos
+                                $error = false;
+
+                                // Validar los campos
+                                if (!esCampoValido($titulo)) {
+                                    $error = true;
+                                    echo '<div class="alert alert-danger" role="alert">El titulo no es válido</div>';
+                                }
+                                if (!esCampoValido($desc)) {
+                                    $error = true;
+                                    echo '<div class="alert alert-danger" role="alert">La descripcion no es válida</div>';
+                                }
+                                if (!esCampoValido($estado)) {
+                                    $error = true;
+                                    echo '<div class="alert alert-danger" role="alert">El estado no es válido</div>';
+                                }
+
+                                // Si todos los campos son válidos, guardamos la tarea
+                                
+                                    if (!$error) { 
+         
+                                        $resultado = insert_tarea($titulo, $desc, $estado, $id_usuario);
+
+                                        if ($resultado[0]) {
+                                            echo '<div class="alert alert-success" role="alert">' . $resultado[1] . '</div>';
+                                        } else {
+                                            echo '<div class="alert alert-danger" role="alert">' . $resultado[1] . '</div>';
+                                        }
+                                        
+                               
+                               
+                               }
+                            }
+                            ?>
+
+
 
                 </div>
             </main>

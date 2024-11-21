@@ -1,5 +1,5 @@
 <?php
-/*
+
 $tareas = [
         [
             'id' => 1,
@@ -21,7 +21,7 @@ $tareas = [
             'descripcion' => 'Publicar en github solución de la tarea unidad 2',
             'estado' => 'Completada'
         ]
-    ];*/
+    ];
 
 function tareas()
 {
@@ -29,18 +29,45 @@ function tareas()
     return $tareas;
 }
 
-function filtraCampo($campo)
-{
-    $campo = trim($campo);
-    $campo = stripslashes($campo);
-    $campo = htmlspecialchars($campo);
-    return $campo;
+// Filtrar el contenido de un campo para que no contenga caracteres especiales, espacios en blanco duplicados, etc. 
+// Recibe la variable y la devuelve filtrada.
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
 }
+
+
+
+function validarLargoCampo($data, $longitud)
+{
+    return (strlen(trim($data)) > $longitud);
+}
+
+
+
+function validarCampoTexto($data)
+{
+    return (!empty(test_input($data) && validarLargoCampo($data, 2)));
+}
+
+
+
+
+function esNumeroValido($data)
+{
+    return (!empty(test_input($data) && is_numeric($data)));
+}
+
 
 function esCampoValido($campo)
 {
-    return !empty(filtraCampo($campo));
+    return !empty(test_input($campo));
 }
+
+
+
 
 function guardar($id, $desc, $est)
 {
@@ -48,9 +75,9 @@ function guardar($id, $desc, $est)
     {
         global $tareas;
         $data =[
-            'id' => filtraCampo($id),
-            'descripcion' => filtraCampo($desc),
-            'estado' => filtraCampo($est)
+            'id' => test_input($id),
+            'descripcion' => test_input($desc),
+            'estado' => test_input($est)
         ];
         array_push($tareas, $data);
         return true;
@@ -62,3 +89,7 @@ function guardar($id, $desc, $est)
     
 }
 
+
+
+
+?>

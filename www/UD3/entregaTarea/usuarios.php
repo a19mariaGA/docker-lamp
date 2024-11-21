@@ -52,8 +52,8 @@
                                                 echo '<td>' . $usuario['apellidos'] . '</td>';
                                                 echo '<td>' . $usuario['contrasena'] . '</td>';
                                                 echo '<td>';
-                                                echo '<a class="btn btn-outline-success btn-sm me-1" href="editarUsuario.php?id=' . $usuario['id'] . '" role="button">Editar</a></span>';
-                                                echo '<a class="btn btn-outline-danger btn-sm" href="borrar.php?id=' . $usuario['id'] . '" role="button">Borrar</a>';
+                                                echo '<a class="btn btn-outline-success btn-sm me-1" href="editaUsuarioForm.php?id=' . $usuario['id'] . '" role="button">Editar</a></span>';
+                                                echo '<a class="btn btn-outline-danger btn-sm" href="borraUsuario.php?id=' . $usuario['id'] . '" role="button">Borrar</a>';
                                                 echo '</td>';
                                                 echo '</tr>';
                                             }
@@ -73,6 +73,10 @@
                     </div>
                 </div>
 
+
+                <div class="container justify-content-between mb-2">
+                     <a class="btn btn-success btn-sm" href="index.php" role="button">Volver</a>
+                </div>
                 
             </main>
         </div>
