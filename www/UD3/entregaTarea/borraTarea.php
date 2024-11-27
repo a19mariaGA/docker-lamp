@@ -17,7 +17,7 @@
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="container justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h2>Edita Usuario</h2>
+                    <h2>Borrar Tarea</h2>
                 </div>
 
                 <div class="container justify-content-between">
@@ -25,15 +25,15 @@
                 <form >
                         <?php
                         
-                        require_once('pdo.php');
+                        require_once('mysqli.php');
                         
                         if (!empty($_GET) && isset($_GET['id']))
                         {
                             
 
-                            if (borrarUsuario($_GET['id']))
+                            if (borrarTarea($_GET['id']))
                             {
-                                echo '<div class="alert alert-success" role="alert">Usuario borrado correctamente.</div>';
+                                echo '<div class="alert alert-success" role="alert">Tarea borrada correctamente.</div>';
                             }
                             else
                             {
@@ -42,7 +42,7 @@
                         }
                         else
                         {
-                            echo '<div class="alert alert-warning" role="alert">No se puede localizar nnguna  tarea.</div>';
+                            echo '<div class="alert alert-warning" role="alert">No se ha localizar ninguna  tarea.</div>';
                         }
                     ?>
                         
@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="container justify-content-between mb-2">
-                    <a class="btn btn-info btn-sm" href="usuarios.php" role="button">Volver</a>
+                    <a class="btn btn-info btn-sm" href="tareas.php" role="button">Volver</a>
                 </div>
 
                 </div>

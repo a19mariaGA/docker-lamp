@@ -11,6 +11,7 @@
                 </div>
 
                 <div class="container justify-content-between">
+                    <!-- Crea la base de datos + la tabla-->
                     <p><a class="btn btn-info btn-sm" href="init.php" role="button">Inicializar</a></p>    
                     <p><a class="btn btn-info btn-sm" href="nuevoUsuario.php" role="button">Nuevo usuario</a></p>
                     <p><a class="btn btn-info btn-sm" href="listaUsuarios.php" role="button">Lista de usuario</a></p>

@@ -29,6 +29,7 @@
                                 <tr>    
                                                             
                                     <th>Identificador</th>
+                                    <th>Titulo</th>
                                     <th>Descriptción</th>
                                     <th>Estado</th>
                                     <th>Usuario</th>
@@ -40,34 +41,76 @@
                             <div class="container justify-content-between">
                    
 
+                           
                             <?php
                                     require_once('mysqli.php');
+                                    require_once('pdo.php');
+
                                     $id = null;
+                                    $username = null;
+                                    $estado = null;
+
+                                    // Verificamos si hay un ID en la URL para editar o borrar una tarea
                                     if (!empty($_GET) && isset($_GET['id'])) {
                                         $id = $_GET['id'];
                                     }
 
-                                    // Llamada a la función que obtiene las tareas con el nombre del usuario
-                                    $resultado = select_tarea();
+                                    // Verificamos si hay parámetros de búsqueda en la URL
+                                    if (!empty($_GET) && isset($_GET['username'])) {
+                                        $username = $_GET['username'];
+                                    }
 
-                                    if ($resultado && count($resultado) > 0) {
-                                        // Recorrer y mostrar cada tarea
-                                        foreach ($resultado as $result) {
-                                            echo '<tr>';
-                                            echo '<td>' . $result['id'] . '</td>';
-                                            echo '<td>' . $result['descripcion'] . '</td>';
-                                            echo '<td>' . $result['estado'] . '</td>';
-                                            echo '<td>' . $result['username'] . '</td>'; // Muestra el nombre del usuario asociado a la tarea
-                                            echo '<td>';
-                                            echo '<a class="btn btn-outline-success btn-sm me-1" href="editaTareaForm.php?id=' . $result['id'] . '" role="button">Editar</a>';
-                                            echo '<a class="btn btn-outline-danger btn-sm" href="borraTarea.php?id=' . $result['id'] . '" role="button">Borrar</a>';
-                                            echo '</td>';
-                                            echo '</tr>';
+                                    if (!empty($_GET) && isset($_GET['estado'])) {
+                                        $estado = $_GET['estado'];
+                                    }
+
+                                    // Depuración de parámetros
+                                    echo "<pre>";
+                                    echo "Parámetros de entrada:";
+                                    var_dump($username, $estado);
+                                    echo "</pre>";
+
+                                    // Si ambos parámetros están presentes, buscar las tareas con esos filtros
+                                    if (!empty($username) && !empty($estado)) {
+                                        // Llamada a la función que obtiene las tareas filtradas por username y estado
+                                        $resultado = buscarTareaUsername($username, $estado);
+
+                                        // Si no se encuentran tareas con esos filtros, obtenemos todas las tareas
+                                        if (!$resultado[0] || count($resultado[1]) == 0) {
+                                            // Si no se encontraron tareas, llamamos a select_tarea() para obtener todas las tareas
+                                            $resultado = select_tarea();
                                         }
                                     } else {
-                                        echo '<div class="alert alert-secondary" role="alert">No hay tareas registradas.</div>';
+                                        // Si alguno de los parámetros está vacío, llamamos a select_tarea() para obtener todas las tareas
+                                        $resultado = select_tarea();
+                                    }
+
+                                    // Verificamos si tenemos un resultado válido
+                                    if ($resultado[0]) { // El primer valor indica si la consulta fue exitosa
+                                        $tareas = $resultado[1]; // El segundo valor contiene las tareas
+                                        if (count($tareas) > 0) {
+                                            foreach ($tareas as $result) {
+                                                echo '<tr>';
+                                                echo '<td>' . $result['id'] . '</td>';
+                                                echo '<td>' . $result['titulo'] . '</td>';
+                                                echo '<td>' . $result['descripcion'] . '</td>';
+                                                echo '<td>' . $result['estado'] . '</td>';
+                                                echo '<td>' . $result['username'] . '</td>'; // Muestra el nombre del usuario asociado a la tarea
+                                                echo '<td>';
+                                                echo '<a class="btn btn-outline-success btn-sm me-1" href="editaTareaForm.php?id=' . $result['id'] . '" role="button">Editar</a>';
+                                                echo '<a class="btn btn-outline-danger btn-sm" href="borraTarea.php?id=' . $result['id'] . '" role="button">Borrar</a>';
+                                                echo '</td>';
+                                                echo '</tr>';
+                                            }
+                                        } else {
+                                            echo '<div class="alert alert-secondary" role="alert">No hay tareas registradas.</div>';
+                                        }
+                                    } else {
+                                        echo '<div class="alert alert-danger" role="alert">' . "Error" . '</div>';
                                     }
                                     ?>
+
+
 
                 </div>
 

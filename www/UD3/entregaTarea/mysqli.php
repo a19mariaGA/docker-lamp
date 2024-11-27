@@ -155,7 +155,6 @@ function tabla_tareas (){
     
     }
 
-
     function select_tarea() {
         try {
             // Crear la conexión a la base de datos
@@ -163,7 +162,7 @@ function tabla_tareas (){
             $conexion->select_db('tareas');
             
             // Consulta para obtener las tareas con el nombre del usuario
-            $sql = "SELECT t.id, t.descripcion, t.estado, u.username
+            $sql = "SELECT t.id, t.titulo, t.descripcion, t.estado, u.username
                     FROM tareas t
                     JOIN usuarios u ON t.id_usuario = u.id";
             
@@ -172,16 +171,15 @@ function tabla_tareas (){
             
             // Verificar si la consulta fue exitosa y si hay filas
             if ($resultado && $resultado->num_rows > 0) {
-                // Devolver los resultados como un array asociativo
-                return $resultado->fetch_all(MYSQLI_ASSOC);
+                // Devolver el estado true y los resultados como un array asociativo
+                return [true, $resultado->fetch_all(MYSQLI_ASSOC)];
             } else {
-                // Si no hay resultados, devolver un array vacío
-                return [];
+                // Si no hay resultados, devolver estado false y un array vacío
+                return [true, []];
             }
-            
         } catch (mysqli_sql_exception $e) {
-            // Manejo de excepciones y retorno de un array con el error
-            return [false, $e->getMessage()];
+            // Manejo de excepciones y retorno de estado false con el error
+            return [false, 'Error al consultar las tareas: ' . $e->getMessage()];
         } finally {
             // Cerrar la conexión
             $conexion->close();
@@ -189,50 +187,64 @@ function tabla_tareas (){
     }
     
 
-    function insert_tarea($titulo, $desc, $estado, $id_usuario)
-    {
+    
+    function select_tarea_id($id) {
         try {
-            // Crear la conexión
+            // Crear la conexión a la base de datos
             $conexion = crear_conexion();
             $conexion->select_db('tareas');
-    
+            
             // Verificar si ocurrió un error en la conexión
             if ($conexion->connect_error) {
                 throw new Exception("Conexión fallida: " . $conexion->connect_error);
             }
-    
-            // Preparar la consulta SQL con parámetros
-            $sql = "INSERT INTO tareas (titulo, descripcion, estado, id_usuario) VALUES (?, ?, ?, ?)";
+            
+            // Consulta para obtener la tarea específica con el nombre del usuario
+            $sql = "SELECT t.id, t.descripcion, t.estado, t.titulo, u.username, t.id_usuario
+                    FROM tareas t
+                    JOIN usuarios u ON t.id_usuario = u.id
+                    WHERE t.id = ?";
+            
+            // Preparar la consulta
             $stmt = $conexion->prepare($sql);
-    
+            
             // Verificar si hubo un error al preparar la consulta
             if ($stmt === false) {
                 throw new Exception("Error al preparar la consulta: " . $conexion->error);
             }
-    
-            // Enlazar los parámetros
-            $stmt->bind_param("sssi", $titulo, $desc, $estado, $id_usuario); // Aquí hemos corregido la coma extra
-    
+            
+            // Enlazar el parámetro $id
+            $stmt->bind_param("i", $id);
+            
             // Ejecutar la consulta
             $stmt->execute();
-    
-            // Verificar si la consulta fue exitosa
-            if ($stmt->affected_rows > 0) {
-                return [true, "Tarea guardada correctamente."];
+            
+            // Obtener los resultados
+            $resultado = $stmt->get_result();
+            
+            // Verificar si la consulta fue exitosa y si hay resultados
+            if ($resultado && $resultado->num_rows > 0) {
+                // Devolver los resultados como un array asociativo
+                return $resultado->fetch_assoc(); // Esto devuelve solo un registro
             } else {
-                return [false, "No se insertó ninguna tarea."]; // Aquí devolvemos un mensaje más claro
+                // Si no hay resultados, devolver un array vacío
+                return [];
             }
+            
         } catch (Exception $e) {
-            // Si ocurre un error, devolver el mensaje de la excepción
-            return [false, "Error: " . $e->getMessage()];
+            // Manejo de excepciones y retorno del error
+            return [false, $e->getMessage()];
         } finally {
-            // Cerrar la conexión y la consulta preparada
+            // Cerrar la consulta y la conexión
             if (isset($stmt)) {
                 $stmt->close();
             }
-            $conexion->close();
+            if (isset($conexion)) {
+                $conexion->close();
+            }
         }
     }
+    
     
 
 
@@ -266,6 +278,145 @@ function obtenerUsuarios() {
         $conexion->close();
     }
 }
+
+
+function actualizaTarea($id, $titulo, $desc, $estado, $id_usuario) {
+    try {
+        // Crear la conexión
+        $conexion = crear_conexion();
+        $conexion->select_db('tareas');
+
+        // Verificar si ocurrió un error en la conexión
+        if ($conexion->connect_error) {
+            throw new Exception("Conexión fallida: " . $conexion->connect_error);
+        }
+
+        // Preparar la consulta SQL (evitar usar 'desc' directamente)
+        $sql = "UPDATE tareas SET titulo = ?, descripcion = ?, estado = ?, id_usuario = ? WHERE id = ?";
+        
+        // Preparar la consulta
+        $stmt = $conexion->prepare($sql);
+        
+        // Verificar si hubo un error al preparar la consulta
+        if ($stmt === false) {
+            throw new Exception("Error al preparar la consulta: " . $conexion->error);
+        }
+        
+        // Enlazar los parámetros
+        $stmt->bind_param("sssii", $titulo, $desc, $estado, $id_usuario, $id); // Corregimos los parámetros
+
+        // Ejecutar la consulta
+        $stmt->execute();
+
+        // Verificar si la consulta fue exitosa
+        if ($stmt->affected_rows > 0) {
+            return [true, "Tarea editada correctamente."];
+        } else {
+            return [false, "No se pudo editar ninguna tarea. Asegúrese de que la tarea existe."];
+        }
+    } catch (Exception $e) {
+        // Si ocurre un error, devolver el mensaje de la excepción
+        return [false, "Error: " . $e->getMessage()];
+    } finally {
+        // Cerrar la conexión y la consulta preparada
+        if (isset($stmt)) {
+            $stmt->close();
+        }
+        $conexion->close();
+    }
+}
+
+
+function insert_tarea($titulo, $desc, $estado, $id_usuario)
+{
+    try {
+        // Crear la conexión
+        $conexion = crear_conexion();
+        $conexion->select_db('tareas');
+
+        // Verificar si ocurrió un error en la conexión
+        if ($conexion->connect_error) {
+            throw new Exception("Conexión fallida: " . $conexion->connect_error);
+        }
+
+        // Preparar la consulta SQL con parámetros
+        $sql = "INSERT INTO tareas (titulo, descripcion, estado, id_usuario) VALUES (?, ?, ?, ?)";
+        $stmt = $conexion->prepare($sql);
+
+        // Verificar si hubo un error al preparar la consulta
+        if ($stmt === false) {
+            throw new Exception("Error al preparar la consulta: " . $conexion->error);
+        }
+
+        // Enlazar los parámetros
+        $stmt->bind_param("sssi", $titulo, $desc, $estado, $id_usuario); // Aquí hemos corregido la coma extra
+
+        // Ejecutar la consulta
+        $stmt->execute();
+
+        // Verificar si la consulta fue exitosa
+        if ($stmt->affected_rows > 0) {
+            return [true, "Tarea guardada correctamente."];
+        } else {
+            return [false, "No se insertó ninguna tarea."]; // Aquí devolvemos un mensaje más claro
+        }
+    } catch (Exception $e) {
+        // Si ocurre un error, devolver el mensaje de la excepción
+        return [false, "Error: " . $e->getMessage()];
+    } finally {
+        // Cerrar la conexión y la consulta preparada
+        if (isset($stmt)) {
+            $stmt->close();
+        }
+        $conexion->close();
+    }
+}
+
+
+
+function borrarTarea($id)
+{
+    try {
+        // Crear la conexión
+        $conexion = crear_conexion(); 
+        $conexion->select_db('tareas'); 
+
+        // Verificar si ocurrió un error en la conexión
+        if ($conexion->connect_error) {
+            throw new Exception("Conexión fallida: " . $conexion->connect_error);
+        }
+
+        // Consulta SQL para borrar la tarea
+        $sql = "DELETE FROM tareas WHERE id = ?";
+        
+        // Preparamos la consulta
+        $stmt = $conexion->prepare($sql);
+        $stmt->bind_param("i", $id); // "i" indica que el parámetro $id es de tipo entero
+
+        // Ejecutar la consulta
+        $stmt->execute();
+
+        // Verificar si la consulta fue exitosa
+        if ($stmt->affected_rows > 0) {
+            return [true, "Tarea borrada correctamente."];
+        } else {
+            return [false, "No se pudo borrar la tarea. Asegúrese de que la tarea existe."];
+        }
+    }
+    catch (Exception $e) {
+        return [false, "Error: " . $e->getMessage()];
+    }
+    finally {
+        // Cerrar la conexión y el statement si están definidos
+        if (isset($stmt)) {
+            $stmt->close();
+        }
+        if (isset($conexion)) {
+            $conexion->close();
+        }
+    }
+}
+
 
 
 ?>

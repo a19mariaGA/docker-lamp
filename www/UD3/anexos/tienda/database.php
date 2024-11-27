@@ -1,15 +1,38 @@
 <?php
 
+//mysqli Orientado a objetos
 function conecta($host, $user, $pass, $db)
 {
     $conexion = new mysqli($host, $user, $pass, $db);
     return $conexion;
 }
 
+/*
+function conecta($host, $user, $pass, $db)
+{
+    // Crear la conexión utilizando mysqli en estilo orientado a objetos
+    $conexion = new mysqli($host, $user, $pass, $db);
+
+    // Verificar si hay errores en la conexión
+    if ($conexion->connect_error) {
+        die("Conexión fallida: " . $conexion->connect_error);
+    }
+
+    // Devolver la conexión
+    return $conexion;
+}
+*/
+
+
+// ya conectamos directamente a tienda
 function conectaTienda()
 {
     return conecta('db', 'root', 'test', 'tienda');
 }
+
+
+
+
 
 function cerrarConexion($conexion)
 {
@@ -18,24 +41,29 @@ function cerrarConexion($conexion)
     }
 }
 
+
+
 function creaDB()
 {
     try {
+        //creamos la conexión, null pq no existe aun ninguna bbdd
         $conexion = conecta('db', 'root', 'test', null);
         
+        //verificamos que no existen errores de conexión
         if ($conexion->connect_error)
         {
             return [false, $conexion->error];
         }
         else
         {
-            // Verificar si la base de datos ya existe
+            // Se crea una consulta SQL ($sqlCheck) para verificar si la base de datos llamada tienda ya existe.
             $sqlCheck = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tienda'";
             $resultado = $conexion->query($sqlCheck);
             if ($resultado && $resultado->num_rows > 0) {
                 return [false, 'La base de datos "tienda" ya existía.'];
             }
 
+            //sino existe creamos la bbdd
             $sql = 'CREATE DATABASE IF NOT EXISTS tienda';
             if ($conexion->query($sql))
             {

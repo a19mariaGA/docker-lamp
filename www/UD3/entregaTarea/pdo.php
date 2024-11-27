@@ -118,7 +118,7 @@ function buscarUsuario($id) {
 
         // Preparar el SELECT con un parámetro preparado
         $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT); // Enlazar el parámetro como entero
+        $stmt->bindParam(':id', $id); // Enlazar el parámetro como entero
         $stmt->execute();
 
         // Recuperar el resultado como un array asociativo
@@ -194,7 +194,7 @@ function actualizaUsuario($id,  $username, $nombre, $apellidos, $contrasena)
 
 
 
-function borrarTarea($id)
+function borrarUsuario($id)
 {
     try {
       
@@ -222,6 +222,59 @@ function borrarTarea($id)
     }
     finally
     {
+        $conexion = null;
+    }
+}
+
+
+function buscarTareaUsername($username, $estado) {
+    try {
+        // Obtener la conexión a la base de datos
+        $conexion = conexion_PDO();
+        $conexion->exec("USE tareas");
+
+        // Establecer el modo de error a excepción
+        $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Consulta base filtrada por 'username'
+        $sql = "SELECT t.id, t.titulo, t.descripcion, t.estado, u.username
+                FROM tareas t
+                JOIN usuarios u ON t.id_usuario = u.id
+                WHERE u.username = :username";
+
+        // Si 'estado' es proporcionado, agregar el filtro adicional
+        if (!empty($estado)) {
+            $sql .= " AND t.estado = :estado";
+        }
+
+        // Preparar la consulta
+        $stmt = $conexion->prepare($sql);
+
+        // Vincular los parámetros
+        $stmt->bindParam(':username', $username);
+
+        // Si 'estado' se proporciona, vincularlo también
+        if (!empty($estado)) {
+            $stmt->bindParam(':estado', $estado);
+        }
+
+        // Ejecutar la consulta
+        $stmt->execute();
+
+        // Recuperar el resultado como un array asociativo
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Verificar si se encontró algún resultado
+        if ($resultados && count($resultados) > 0) {
+            return [true, $resultados]; // Resultados encontrados
+        } else {
+            return [false, []]; // No hay resultados
+        }
+    } catch (PDOException $e) {
+        // En caso de error, devolver un mensaje
+        return [false, 'Error al consultar la base de datos: ' . $e->getMessage()];
+    } finally {
+        // Cerrar la conexión
         $conexion = null;
     }
 }
