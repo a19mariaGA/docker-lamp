@@ -10,29 +10,37 @@ function crear_conexion(){
     }
     
 
-    return $conexion;  // Devolver la conexión para usarla en otras funciones
+    return $conexion;  // Devuelve la conexión para usarla en otras funciones
 }
+
+
 
 function crear_bbdd()
 {
     try {
+        //abrimos la conexión
         $conexion = crear_conexion(); 
         
+        //si hay algún error devuelve ese error
         if ($conexion->connect_error)
         {
             return [false, $conexion->error];
         }
         else
         {
-            // Verificar si la base de datos ya existe
+            // comprobamos si la bbdd existe
             $sqlCheck = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tareas'";
+            // el resultado se guarda en $resultado
             $resultado = $conexion->query($sqlCheck);
 
+            //si en resultado hay algun valor devuelve un array de booleanos
             if ($resultado && $resultado->num_rows > 0) {
                 return [false, 'La base de datos "tareas" ya existe.'];
             }
 
+            // creamos la bbdd si no existe, no se devuelven resultados solo true or false
             $sql = 'CREATE DATABASE IF NOT EXISTS tareas';
+
             if ($conexion->query($sql))
             {
                 return [true, 'Base de datos "tareas" creada correctamente'];
@@ -42,23 +50,26 @@ function crear_bbdd()
                 return [false, 'No se pudo crear la base de datos "tareas".'];
             }
         }
-    }
-    catch (mysqli_sql_exception $e)
-    {
-        return [false, $e->getMessage()];
-    }
-    finally
-    {
-                // Cerrar la conexión si se estableció
-        if (isset($conexion) && $conexion->connect_errno === 0) {
-            $conexion->close();       
-        }
-    }
+            }
+            catch (mysqli_sql_exception $e)
+            {
+                return [false, $e->getMessage()];
+            }
+            finally
+            {
+                        // Cerramos la conexión 
+                if (isset($conexion) && $conexion->connect_errno === 0) {
+                    $conexion->close();       
+                }
+            }
 }
+
+
     
 function tabla_usuarios() {
 
     try {
+        //creamos la conexion y seleccionamos la bbdd que ya está creada
         $conexion = crear_conexion(); 
         $conexion->select_db('tareas');
          
@@ -118,7 +129,7 @@ function tabla_tareas (){
          }
          else
          {
-             // Verificar si la tabla ya existe
+             
              $sqlCheck = "SHOW TABLES LIKE 'tareas'";
              $resultado = $conexion->query($sqlCheck);
  
@@ -155,6 +166,7 @@ function tabla_tareas (){
     
     }
 
+    //funcion que lista todas las tareas creadas
     function select_tarea() {
         try {
             // Crear la conexión a la base de datos
@@ -172,7 +184,7 @@ function tabla_tareas (){
             // Verificar si la consulta fue exitosa y si hay filas
             if ($resultado && $resultado->num_rows > 0) {
                 // Devolver el estado true y los resultados como un array asociativo
-                return [true, $resultado->fetch_all(MYSQLI_ASSOC)];
+                return [true, $resultado->fetch_all(MYSQLI_ASSOC)];  // esta funcion devuelve un array con resultados
             } else {
                 // Si no hay resultados, devolver estado false y un array vacío
                 return [true, []];
@@ -248,7 +260,7 @@ function tabla_tareas (){
     
 
 
-// Función para obtener todos los usuarios
+// Función para obtener todos los usuarios, lo voy a utilizar para crear una tarea y asociarla a un usuario 
 function obtenerUsuarios() {
     try {
         $conexion = crear_conexion();
@@ -371,6 +383,7 @@ function insert_tarea($titulo, $desc, $estado, $id_usuario)
         $conexion->close();
     }
 }
+
 
 
 

@@ -38,11 +38,15 @@
                                 <?php
                                     require_once('pdo.php');
                                     $resultado = select_usuarios();
+
+                                    // si la función devuelve algun resultado y es true
                                     if ($resultado && $resultado[0])
                                     {
+                                        // los resultados optenidos [1] se guardan en usuarios
                                         $usuarios = $resultado[1];
                                         if ($usuarios)
                                         {
+                                            //recorremos el array 
                                             foreach ($usuarios as $usuario)
                                             {
                                                 echo '<tr>';   
@@ -52,6 +56,7 @@
                                                 echo '<td>' . $usuario['apellidos'] . '</td>';
                                                 echo '<td>' . $usuario['contrasena'] . '</td>';
                                                 echo '<td>';
+                                                                                                    //boton que nos enlaza con el formulario para editar
                                                 echo '<a class="btn btn-outline-success btn-sm me-1" href="editaUsuarioForm.php?id=' . $usuario['id'] . '" role="button">Editar</a></span>';
                                                 echo '<a class="btn btn-outline-danger btn-sm" href="borraUsuario.php?id=' . $usuario['id'] . '" role="button">Borrar</a>';
                                                 echo '</td>';

@@ -46,49 +46,50 @@
                                     require_once('mysqli.php');
                                     require_once('pdo.php');
 
+                                    // esta pagina sirve para listar todas las tareas o la tareas de un usuario por eso se crean las tres variables
                                     $id = null;
                                     $username = null;
                                     $estado = null;
 
-                                    // Verificamos si hay un ID en la URL para editar o borrar una tarea
+                                    // Verificamos si hay un ID en la URL para buscar tareas por id
                                     if (!empty($_GET) && isset($_GET['id'])) {
                                         $id = $_GET['id'];
                                     }
 
-                                    // Verificamos si hay parámetros de búsqueda en la URL
+                                    // Verificamos si lo que se ha recibido es un username 
                                     if (!empty($_GET) && isset($_GET['username'])) {
                                         $username = $_GET['username'];
                                     }
 
+                                    // Verificamos si lo que se ha recibido es un estado 
                                     if (!empty($_GET) && isset($_GET['estado'])) {
                                         $estado = $_GET['estado'];
                                     }
 
-                                    // Depuración de parámetros
+                                    /*Depuración de parámetros
                                     echo "<pre>";
                                     echo "Parámetros de entrada:";
                                     var_dump($username, $estado);
                                     echo "</pre>";
+                                    */
 
-                                    // Si ambos parámetros están presentes, buscar las tareas con esos filtros
-                                    if (!empty($username) && !empty($estado)) {
-                                        // Llamada a la función que obtiene las tareas filtradas por username y estado
-                                        $resultado = buscarTareaUsername($username, $estado);
-
-                                        // Si no se encuentran tareas con esos filtros, obtenemos todas las tareas
+                                    if (!empty($username)) {
+                                        // Si el username existe, buscar tareas por username y estado (si está definido)
+                                        $resultado = buscarTareaUsername($username, $estado ?? null);
+                                    
                                         if (!$resultado[0] || count($resultado[1]) == 0) {
-                                            // Si no se encontraron tareas, llamamos a select_tarea() para obtener todas las tareas
+                                            // Si no hay resultados, listar todas las tareas
                                             $resultado = select_tarea();
                                         }
                                     } else {
-                                        // Si alguno de los parámetros está vacío, llamamos a select_tarea() para obtener todas las tareas
+                                        // Si el username no está definido, listar todas las tareas
                                         $resultado = select_tarea();
                                     }
-
+                                    
                                     // Verificamos si tenemos un resultado válido
                                     if ($resultado[0]) { // El primer valor indica si la consulta fue exitosa
                                         $tareas = $resultado[1]; // El segundo valor contiene las tareas
-                                        if (count($tareas) > 0) {
+                                        if (count($tareas) > 0) { //si existe alguna
                                             foreach ($tareas as $result) {
                                                 echo '<tr>';
                                                 echo '<td>' . $result['id'] . '</td>';

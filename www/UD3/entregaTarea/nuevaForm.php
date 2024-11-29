@@ -21,12 +21,12 @@
                 </div>
 
                 <?php
-                // Incluir la función para obtener los usuarios
+            
                 require_once('mysqli.php');
 
-                // Obtener la lista de usuarios desde la base de datos
+                //obtenemos todos los usuarios pq las tareas tiene que ir asociadas a un usuario y se guarda en la variable 
                 $usuarios = obtenerUsuarios();
-            ?>
+              ?>
 
         <div class="container justify-content-between">
             <form action="nueva.php" method="POST" class="mb-5 w-50">
@@ -57,7 +57,7 @@
                     <label for="id_usuario" class="form-label">Usuario</label>
                     <select class="form-select" id="id_usuario" name="id_usuario" required>
                         <option value="" selected disabled>Seleccione el usuario</option>
-                        <?php foreach ($usuarios as $usuario): ?>
+                        <?php foreach ($usuarios as $usuario): ?> 
                             <option value="<?= $usuario['id']; ?>">
                                 <?= htmlspecialchars($usuario['username']); ?>
                             </option>

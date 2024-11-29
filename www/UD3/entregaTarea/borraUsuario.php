@@ -27,11 +27,14 @@
                         
                         require_once('pdo.php');
                         
-                        if (!empty($_GET) && isset($_GET['id']))
+                        // si se recibe por el metodo GET  y no está vacio e id no está vacio
+                        if (!empty($_GET) && isset($_GET['id'])) 
                         {
-                            
+                            //creamos una variable para almacenar el id recibido
+                            $id = $_GET['id'];
 
-                            if (borrarUsuario($_GET['id']))
+                            //llamamos a la funcion que devuelve true or false e imprime un mensaje  confirmando si se ha podido borrar el usuario
+                            if (borrarUsuario($id))
                             {
                                 echo '<div class="alert alert-success" role="alert">Usuario borrado correctamente.</div>';
                             }
@@ -44,7 +47,7 @@
                         {
                             echo '<div class="alert alert-warning" role="alert">No se puede localizar nnguna  tarea.</div>';
                         }
-                    ?>
+                       ?>
                         
                     </form>
                 </div>

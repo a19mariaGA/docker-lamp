@@ -28,14 +28,13 @@
 
                             // Recoger los datos del formulario
                             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                                // Ya no recogemos el 'id' porque es autoincremental
-                                $titulo = $_POST['titulo']; // Títul
-                                $desc = $_POST['descripcion']; // Descripción
-                                $estado = $_POST['estado']; // Estado
-                                $id_usuario = $_POST['id_usuario']; // ID de usuario
-
+                                // No recogemos el 'id' porque es autoincremental
+                                $titulo = $_POST['titulo'];
+                                $desc = $_POST['descripcion']; 
+                                $estado = $_POST['estado']; 
+                                $id_usuario = $_POST['id_usuario']; 
                                
-                                // Variable para verificar si los campos son válidos
+                                // verificamos si hasta ahora hemos tenido algun error, indicamos que no, false
                                 $error = false;
 
                                 // Validar los campos

@@ -27,34 +27,44 @@
                         <?php
                         require_once('pdo.php');
 
-                        // Verificar si se recibe solo el `id` para cargar los datos
+                        // Verificamos si el id se recibe y si se recibe por el metodo GET
                         if (isset($_GET['id']) && !empty($_GET['id']) ) 
                         
                         {
 
+                            //variable que almacena el valor 
                             $id = $_GET['id'];
 
-                            // Depuración del ID recibido
+                            /* Depuramos que  el valor del id
                             var_dump($_GET['id']);
                             echo '<pre>ID Recibido: ' . htmlspecialchars($id) . '</pre>';
+                            */
 
+
+                            // llamamos a una funcion que busca el usuario asociado a ese id
                             $resultado = buscarUsuario($id);
 
-                            // Depuración del resultado de la función
+                            /* Depuramos el  resultado de la función para ver si funcion y devuelve valores
                             echo '<pre>Resultado de buscarUsuario: ';
                             print_r($resultado);
                             echo '</pre>';
+                            */
 
+                            // si existen resultados asociamos estos resultados a las variables
                             if ($resultado && $resultado[0]) {
+                                //$usuario es igual a los datos que contiene el array asociativo
                                 $usuario = $resultado[1];
                                 $username = $usuario['username'];
                                 $nombre = $usuario['nombre'];
                                 $apellidos = $usuario['apellidos'];
                                 $contrasena = $usuario['contrasena'];
                         ?>
+
+                                 <!-- Enviamos el id y el formulario con los nuevos valores -->
                                 <input type="hidden" name="id" value="<?php echo $id ?>">
                                 <?php include_once('formulario.php'); ?>
                                 <button type="submit" class="btn btn-info btn-sm">Actualizar</button>
+                                
                         <?php
                             } else 
                             {

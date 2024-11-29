@@ -22,7 +22,8 @@
 
                 <div class="container justify-content-between">
                     
-                <form action="editarUsuario.php" method="POST" class="mb-2 w-50">
+                <!-- En esta misma pagina  -->
+                <form action="editaUsuario.php" method="POST" class="mb-2 w-50">
                         <?php
                         
                         require_once('pdo.php');
@@ -37,7 +38,7 @@
                             $apellidos = $_POST['apellidos'];
                             $contrasena = $_POST['contrasena'];
 
-                            
+                            // creamos una variable para almacenar errores, partiendo que es false, que no existen errores 
                             $error = false;
 
                                                       
@@ -65,10 +66,11 @@
                                 $error = true;
                                 echo '<div class="alert alert-danger" role="alert">El campo contrasena es obligatorio y debe contener al menos 3 caracteres</div>';
                             }
+                            // if ($error ===false); si no existen errores hasta ahora
                             if (!$error)
                             {
-                                require_once('database.php');
-                                $resultado = actualizaUsuario($id, test_input($username), test_input($nombre), test_input($apellidos), test_input($contrasena));
+                                require_once('pdo.php');
+                                $resultado = actualizaUsuario($id, $username, $nombre, $apellidos, $contrasena);
                                 if ($resultado[0])
                                 {
                                     echo '<div class="alert alert-success" role="alert">Usuario actualizado correctamente.</div>';

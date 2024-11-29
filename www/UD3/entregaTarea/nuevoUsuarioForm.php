@@ -21,8 +21,10 @@
                 </div>
 
                 <div class="container justify-content-between">
+                <!--Los valores recogidos en el formulario se envian a nuevoUsuario.php mediante el método POST  -->
                     <form action="nuevoUsuario.php" method="POST" class="mb-5 w-50">
                     
+                     <!--El formulario está guardado en la página formulario.php  -->
                     <?php include_once('formulario.php'); ?>
                     
                     <button type="submit" class="btn btn-success btn-sm">Guardar</button>

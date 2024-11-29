@@ -22,25 +22,26 @@
 
                 <div class="container justify-content-between">
                     <form action="editaTarea.php" method="POST" class="mb-2 w-50">
-                        <?php
+
+                        <?php    // este php solo busca la tarea que contiene ese id, los resultados y que el form aparezca precargado
                         require_once('mysqli.php');
 
-                        // Verificar si se recibe el `id` para cargar los datos
+                        // Verificar si se recibe el id y se recibe por el metodo get y se iguala a una variable
                         if (isset($_GET['id']) && !empty($_GET['id'])) {
                             $id = $_GET['id'];
 
 
-                            var_dump($_GET);
+                           // var_dump($_GET);
 
 
-                            // Obtener los detalles de la tarea
+                            // llamos a la tarea que busca tareas por id y el resultado lo igualamos a una variable
                             $resultado = select_tarea_id($id);
 
-                            var_dump($resultado);
+                            //var_dump($resultado);
 
                             // Si la tarea existe, mostrar los datos
-                            if ($resultado && is_array($resultado) && count($resultado) > 0) {
-                                $tarea = $resultado; // Accede directamente al array asociativo
+                            if ($resultado &&  count($resultado) > 0) {
+                                $tarea = $resultado; //  se asigna el contenido de $resultado a la variable $tarea
                                 $titulo = htmlspecialchars($tarea['titulo']);
                                 $descripcion = htmlspecialchars($tarea['descripcion']);
                                 $estado = htmlspecialchars($tarea['estado']);
@@ -77,8 +78,8 @@
                                     <select class="form-select" id="id_usuario" name="id_usuario" required>
                                         <option value="" disabled>Seleccione el usuario</option>
                                         <?php
-                                        // Recuperar usuarios para poblar el campo de selección
-                                        $usuarios = obtenerUsuarios();  // Función que debes definir para obtener usuarios
+                                       // buscamos todos los usuarios para poder asociar a la tarea
+                                        $usuarios = obtenerUsuarios();  
                                         foreach ($usuarios as $usuario):
                                         ?>
                                             <option value="<?= $usuario['id']; ?>" <?php echo ($usuario['id'] == $id_usuario) ? 'selected' : ''; ?>>

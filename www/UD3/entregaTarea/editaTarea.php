@@ -24,14 +24,13 @@
                     <?php
                         require_once('utils.php');
                         require_once('mysqli.php');
-
-                        // Depurar los datos recibidos (si es necesario, para comprobar la llegada de datos)
-                        var_dump($_POST);
+                       
+                     // var_dump($_POST);
 
                         // Verificar si se ha recibido un ID de tarea desde el formulario
                         if (!empty($_POST) && isset($_POST['id'])) {
                             // Obtener los datos del formulario
-                            $id = $_POST['id'];
+                            $id = $_POST['id']; // aqui si tenemos que crear la variable 
                             $titulo = $_POST['titulo'];
                             $descripcion = $_POST['descripcion'];
                             $estado = $_POST['estado'];
@@ -62,8 +61,8 @@
 
                             // Si no hay errores, proceder a actualizar la tarea
                             if (!$error) {
-                                // Asegúrate de que la función de actualización esté usando los parámetros correctos
-                                $resultado = actualizaTarea($id, test_input($titulo), test_input($descripcion), test_input($estado), test_input($id_usuario));
+                              
+                                $resultado = actualizaTarea($id, $titulo, $descripcion, $estado, $id_usuario);
 
                                 // Mostrar mensaje de éxito o error
                                 if ($resultado[0]) {

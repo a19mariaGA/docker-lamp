@@ -24,9 +24,11 @@
                 <div class="container justify-content-between">
                     
                     <?php
+
+                        //esta página solo crea la bbdd y las tablas, si no existen
                         require_once('mysqli.php');
 
-
+                        // llamamos a la función que crea la bbdd, esta funcion devuelve un array de booleanos,  el valor 0 (true or false)
                         $resultado = crear_bbdd();
                         if ($resultado[0])
                         {
@@ -36,6 +38,7 @@
                         {
                             echo '<div class="alert alert-warning" role="alert">';
                         }
+                        // el valor 1 devuelve el mensaje asociado a true or false 
                         echo $resultado[1];
                         echo '</div>';
 

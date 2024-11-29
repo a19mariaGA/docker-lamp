@@ -23,7 +23,14 @@
                 <div class="container justify-content-between">
                     
 
-                <?php
+                <?php 
+                // si los datos han sido enviado por el método POST
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    
+                    // y los valores están definidos
+                    if (isset($_POST['username']) && isset($_POST['nombre']) && isset($_POST['apellidos']) && isset($_POST['contrasena'])) {
+
+                    //los asignamos a las variables
                     $username = $_POST['username'];
                     $nombre = $_POST['nombre'];
                     $apellidos = $_POST['apellidos'];
@@ -32,8 +39,10 @@
                     require_once('pdo.php');
                     require_once('utils.php');
 
+                    // creamos una variable con valor false(sin errores hasta ahora)
                     $error = false;
 
+                    // si no se cumple lo que se fija en la función  existe un error ($error = true;)
                     if (!validarCampoTexto($username))
                     {
                         $error = true;
@@ -59,10 +68,12 @@
                         echo '<div class="alert alert-danger" role="alert">El campo contraseña es obligatorio y debe contener al menos 3 caracteres.</div>';
                     }
 
-                    if (!$error)
+                    // si no existen errores (!$error)
+                    if ($error===false)
                     {
-                        
-                        $resultado = nuevoUsuario(test_input($username), test_input($nombre), test_input($apellidos),  test_input($contrasena));
+                        //llamomos a la funcion que inserta los valores en la tabla usuario
+                        $resultado = nuevoUsuario($username, $nombre, $apellidos, $contrasena);
+
                         if ($resultado[0])
                         {
                             echo '<div class="alert alert-success" role="alert">Usuario guardado correctamente.</div>';
@@ -72,6 +83,12 @@
                             echo '<div class="alert alert-danger" role="alert">Ocurrió un error guardando el usuario: ' . $resultado[1] . '</div>';
                         }
                     }
+
+                    }else{
+                        echo '<div class="alert alert-success" role="alert">Error al enviar los datos</div>';
+                    }
+                }
+                    
 
                     ?>
                 </div>

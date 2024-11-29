@@ -41,7 +41,7 @@ function select_usuarios(){
         }
         else
         {
-            //Preparar el select 
+            //creamos una consulta 
             $stmt = $conexion->prepare("SELECT id, username, nombre, apellidos, contrasena FROM usuarios");
             $stmt->execute();
 
@@ -56,11 +56,11 @@ function select_usuarios(){
 
              // Si se encontraron usuarios
              if ($resultados) {
+                //devuelve true y los resultados encontrados
                  return [true, $resultados];
                 } else {
                 return [false, "No hay usuarios registrados"];
                 }
-
 
         }
         
@@ -71,6 +71,7 @@ function select_usuarios(){
     } 
     finally
     {
+        //cerramos siempre la conexión
         $conn = null;
     }
     
@@ -126,12 +127,13 @@ function buscarUsuario($id) {
 
         // Verificar si se encontró algún resultado
         if (count($resultados) > 0) {
-            return [true, $resultados[0]]; // Devolver el primer resultado como array asociativo
+            return [true, $resultados[0]]; // devuelve  true y el resultado obtenido
         } else {
+            // devuelve false y un string con el mensaje
             return [false, 'No se encontró ningún usuario con ese ID'];
         }
     } catch (PDOException $e) {
-        // En caso de error, devolver un mensaje
+        
         return [false, 'Error al consultar la base de datos: ' . $e->getMessage()];
     } finally {
         // Cerrar la conexión
@@ -201,8 +203,6 @@ function borrarUsuario($id)
         $conexion = conexion_PDO();
         $conexion->exec("USE tareas");
 
-        $conexion->beginTransaction();
-
         $sqlTareas = "DELETE FROM tareas WHERE id_usuario = :usuarioId";
         $stmtTareas = $conexion->prepare($sqlTareas);
         $stmtTareas->bindParam(':usuarioId', $id, PDO::PARAM_INT);
@@ -213,7 +213,7 @@ function borrarUsuario($id)
         $stmtUsuarios->bindParam(':usuarioId', $id, PDO::PARAM_INT);
         $stmtUsuarios->execute();
 
-        $conexion->commit();
+        
         return true;
     }
     catch (PDOException $e) {
