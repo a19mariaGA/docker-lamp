@@ -119,7 +119,7 @@ function buscarUsuario($id) {
 
         // Preparar el SELECT con un parámetro preparado
         $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE id = :id");
-        $stmt->bindParam(':id', $id); // Enlazar el parámetro como entero
+        $stmt->bindParam(':id', $id); 
         $stmt->execute();
 
         // Recuperar el resultado como un array asociativo
@@ -236,7 +236,7 @@ function buscarTareaUsername($username, $estado) {
         // Establecer el modo de error a excepción
         $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Consulta base filtrada por 'username'
+        // Buscamos tareas por username
         $sql = "SELECT t.id, t.titulo, t.descripcion, t.estado, u.username
                 FROM tareas t
                 JOIN usuarios u ON t.id_usuario = u.id

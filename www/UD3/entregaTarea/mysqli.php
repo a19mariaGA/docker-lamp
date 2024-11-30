@@ -315,7 +315,7 @@ function actualizaTarea($id, $titulo, $descripcion, $estado, $id_usuario) {
         }
         
         // Enlazar los parámetros
-        $stmt->bind_param("sssii", $titulo, $desc, $estado, $id_usuario, $id); // Corregimos los parámetros
+        $stmt->bind_param("sssii", $titulo, $descripcion, $estado, $id_usuario, $id); // Corregimos los parámetros
 
         // Ejecutar la consulta
         $stmt->execute();
