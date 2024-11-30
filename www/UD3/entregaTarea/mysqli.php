@@ -1,7 +1,8 @@
 <?php
 
+
 function crear_conexion(){
-    // 1. Crear la conexión
+    // 1. Crear la conexión db:host, usuario, pass
     $conexion = new mysqli('db', 'root', 'test');
 
     // 2. Comprobar la conexión
@@ -9,7 +10,6 @@ function crear_conexion(){
         die('Fallo en la conexión: ' . $conexion->connect_error . ', con número ' . $conexion->connect_errno . '.<br>');
     }
     
-
     return $conexion;  // Devuelve la conexión para usarla en otras funciones
 }
 
@@ -24,7 +24,7 @@ function crear_bbdd()
         //si hay algún error devuelve ese error
         if ($conexion->connect_error)
         {
-            return [false, $conexion->error];
+            return [false, $conexion->error]; //array booleano que devuelve true or false y un mensaje
         }
         else
         {
@@ -57,11 +57,10 @@ function crear_bbdd()
             }
             finally
             {
-                        // Cerramos la conexión 
-                if (isset($conexion) && $conexion->connect_errno === 0) {
+                    // Cerramos la conexión 
                     $conexion->close();       
                 }
-            }
+            
 }
 
 
@@ -95,6 +94,7 @@ function tabla_usuarios() {
                      apellidos VARCHAR(100) NOT NULL,
                      contrasena VARCHAR(100)
                  )';
+
              if ($conexion->query($sql))
              {
                  return [true, 'Tabla "usuarios" creada correctamente'];
@@ -199,7 +199,7 @@ function tabla_tareas (){
     }
     
 
-    
+    //funcion que busca una tarea a raiz de un id seleccionado
     function select_tarea_id($id) {
         try {
             // Crear la conexión a la base de datos
@@ -211,11 +211,11 @@ function tabla_tareas (){
                 throw new Exception("Conexión fallida: " . $conexion->connect_error);
             }
             
-            // Consulta para obtener la tarea específica con el nombre del usuario
+            // consulta que selecciona tb el username del usuario al que pertenece la tarea
             $sql = "SELECT t.id, t.descripcion, t.estado, t.titulo, u.username, t.id_usuario
                     FROM tareas t
                     JOIN usuarios u ON t.id_usuario = u.id
-                    WHERE t.id = ?";
+                    WHERE t.id = ?";  
             
             // Preparar la consulta
             $stmt = $conexion->prepare($sql);
@@ -291,8 +291,8 @@ function obtenerUsuarios() {
     }
 }
 
-
-function actualizaTarea($id, $titulo, $desc, $estado, $id_usuario) {
+//la funcion recibe todos los valores que debemos actualizar
+function actualizaTarea($id, $titulo, $descripcion, $estado, $id_usuario) {
     try {
         // Crear la conexión
         $conexion = crear_conexion();
@@ -303,7 +303,7 @@ function actualizaTarea($id, $titulo, $desc, $estado, $id_usuario) {
             throw new Exception("Conexión fallida: " . $conexion->connect_error);
         }
 
-        // Preparar la consulta SQL (evitar usar 'desc' directamente)
+        // Preparar la consulta SQL 
         $sql = "UPDATE tareas SET titulo = ?, descripcion = ?, estado = ?, id_usuario = ? WHERE id = ?";
         
         // Preparar la consulta
@@ -361,7 +361,7 @@ function insert_tarea($titulo, $desc, $estado, $id_usuario)
         }
 
         // Enlazar los parámetros
-        $stmt->bind_param("sssi", $titulo, $desc, $estado, $id_usuario); // Aquí hemos corregido la coma extra
+        $stmt->bind_param("sssi", $titulo, $desc, $estado, $id_usuario);
 
         // Ejecutar la consulta
         $stmt->execute();
@@ -370,7 +370,7 @@ function insert_tarea($titulo, $desc, $estado, $id_usuario)
         if ($stmt->affected_rows > 0) {
             return [true, "Tarea guardada correctamente."];
         } else {
-            return [false, "No se insertó ninguna tarea."]; // Aquí devolvemos un mensaje más claro
+            return [false, "No se insertó ninguna tarea."];
         }
     } catch (Exception $e) {
         // Si ocurre un error, devolver el mensaje de la excepción
